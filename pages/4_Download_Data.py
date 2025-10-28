@@ -14,13 +14,13 @@ st.header("Download results")
 st.markdown("Here you can download the aggregated results for 2030 and 2040:")
 
 export_csv(
-    st.session_state['Summary2030'],
+    st.session_state['Summary2030'].drop(columns=[("global", "global", "Path")]),
     "Download all 2030 results as csv",
     "Results2030.csv",
 )
 
 export_csv(
-    st.session_state['Summary2040'],
+    st.session_state['Summary2040'].drop(columns=[("global", "global", "Path")]),
     "Download all 2040 results as csv",
     "Results2040.csv",
 )

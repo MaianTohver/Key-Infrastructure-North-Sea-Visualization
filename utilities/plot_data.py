@@ -7,7 +7,7 @@ from branca.colormap import linear
 from folium.plugins import PolyLineTextPath, PolyLineOffset
 from streamlit_folium import st_folium
 
-from .process_data import aggregate_time
+from .process_data import aggregate_time, export_csv
 
 def plot_chart(df):
     """
@@ -84,54 +84,54 @@ def plot_energy_balance():
     """
     data = st.session_state['Result']['energybalance']
 
-    with st.form('PlottingOptions'):
-        carriers = data.columns.get_level_values('Carrier').unique()
-        selected_carrier = st.selectbox('**Carrier Selection**', carriers)
+    # with st.form('PlottingOptions'):
+    carriers = data.columns.get_level_values('Carrier').unique()
+    selected_carrier = st.selectbox('**Carrier Selection**', carriers)
 
-        nodes = data.columns.get_level_values('Node').unique()
-        selected_node = st.selectbox('**Node Selection**', nodes)
+    nodes = data.columns.get_level_values('Node').unique()
+    selected_node = st.selectbox('**Node Selection**', nodes)
 
-        time_agg_options = {'Annual Totals': 'Year',
-                            'Monthly Totals': 'Month',
-                            'Weekly Totals': 'Week',
-                            'Daily Totals': 'Day',
-                            'Hourly Totals': 'Hour'}
-        time_agg = st.selectbox('**Time Aggregation**', time_agg_options.keys())
+    time_agg_options = {'Annual Totals': 'Year',
+                        'Monthly Totals': 'Month',
+                        'Weekly Totals': 'Week',
+                        'Daily Totals': 'Day',
+                        'Hourly Totals': 'Hour'}
+    time_agg = st.selectbox('**Time Aggregation**', time_agg_options.keys())
 
-        submitted = st.form_submit_button('Plot')
+    # submitted = st.form_submit_button('Plot')
 
-    if submitted:
-        data = data.loc[:, (slice(None), selected_carrier, slice(None), slice(None))]
+    # if submitted:
+    data = data.loc[:, (selected_node, selected_carrier, slice(None), slice(None))]
 
-        aggregated_data = aggregate_time(data, time_agg_options[time_agg])
+    aggregated_data = aggregate_time(data, time_agg_options[time_agg])
 
-        st.header("Supply")
-        series_supply = ['generic_production',
-                         'technology_outputs',
-                         'network_inflow',
-                         'import']
-        selected_supply_series = st.multiselect('Select Series to Filter', series_supply,
-                                                default=series_supply)
+    st.header("Supply")
+    series_supply = ['generic_production',
+                     'technology_outputs',
+                     'network_inflow',
+                     'import']
+    selected_supply_series = st.multiselect('Select Series to Filter', series_supply,
+                                            default=series_supply)
 
-        plot_data = aggregated_data.loc[:,
-                    aggregated_data.columns.get_level_values('Variable').isin(selected_supply_series)]
-        plot_data.columns = plot_data.columns.get_level_values('Variable')
-        chart = plot_chart(plot_data)
-        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+    plot_data = aggregated_data.loc[:,
+                aggregated_data.columns.get_level_values('Variable').isin(selected_supply_series)]
+    plot_data.columns = plot_data.columns.get_level_values('Variable')
+    chart = plot_chart(plot_data)
+    st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
-        st.header("Demand")
-        # Multi-select box for filtering series
-        series_demand = ['demand',
-                         'technology_inputs',
-                         'network_outflow',
-                         'export']
-        selected_demand_series = st.multiselect('Select Series to Filter', series_demand,
-                                                default=series_demand)
-        plot_data = aggregated_data.loc[:,
-                    aggregated_data.columns.get_level_values('Variable').isin(selected_demand_series)]
-        plot_data.columns = plot_data.columns.get_level_values('Variable')
-        chart = plot_chart(plot_data)
-        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+    st.header("Demand")
+    # Multi-select box for filtering series
+    series_demand = ['demand',
+                     'technology_inputs',
+                     'network_outflow',
+                     'export']
+    selected_demand_series = st.multiselect('Select Series to Filter', series_demand,
+                                            default=series_demand)
+    plot_data = aggregated_data.loc[:,
+                aggregated_data.columns.get_level_values('Variable').isin(selected_demand_series)]
+    plot_data.columns = plot_data.columns.get_level_values('Variable')
+    chart = plot_chart(plot_data)
+    st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
 
 def plot_technology_operation():
@@ -140,26 +140,38 @@ def plot_technology_operation():
     """
     data = st.session_state['Result']['technology_operation']
 
-    nodes = data.columns.get_level_values('Node').unique()
+    nodes = list(data.columns.get_level_values('Node').unique())
+    nodes = ["Aggregate all nodes"] + nodes
     selected_node = st.selectbox('**Node Selection**', nodes)
-    data = data.loc[:, (selected_node, slice(None), slice(None))]
+    if selected_node == "Aggregate all nodes":
+        data = data.T.groupby(level=[1 ,2]).sum().T
+        data.columns = pd.MultiIndex.from_tuples(
+            [('Aggregated_node',) + col for col in data.columns]
+        )
+        data.columns.names = ['Node', 'Technology', 'Variable']
+
+    else:
+        data = data.loc[:, (selected_node, slice(None), slice(None))]
+
+    technologies = data.columns.get_level_values('Technology').unique()
+    selected_technology = st.selectbox('**Technology Selection**', technologies)
+
+    time_agg_options = {'Annual Totals': 'Year',
+                        'Monthly Totals': 'Month',
+                        'Weekly Totals': 'Week',
+                        'Daily Totals': 'Day',
+                        'Hourly Totals': 'Hour'}
+    time_agg = st.selectbox('**Time Aggregation**', time_agg_options.keys())
+
+    data = data.loc[:, (slice(None), selected_technology, slice(None))]
+    aggregated_data = aggregate_time(data, time_agg_options[time_agg])
+
 
     with st.form('PlottingOptions'):
-        technologies = data.columns.get_level_values('Technology').unique()
-        selected_technology = st.selectbox('**Technology Selection**', technologies)
-
-        time_agg_options = {'Annual Totals': 'Year',
-                            'Monthly Totals': 'Month',
-                            'Weekly Totals': 'Week',
-                            'Daily Totals': 'Day',
-                            'Hourly Totals': 'Hour'}
-        time_agg = st.selectbox('**Time Aggregation**', time_agg_options.keys())
 
         submitted = st.form_submit_button('Plot')
 
         if submitted:
-            data = data.loc[:, (slice(None), selected_technology, slice(None))]
-            aggregated_data = aggregate_time(data, time_agg_options[time_agg])
 
             st.header("Input")
             variables_in = [col for col in aggregated_data.columns.get_level_values('Variable') if col.endswith('input')]
@@ -193,6 +205,11 @@ def plot_technology_operation():
             else:
                 st.markdown("Nothing to show")
 
+    export_csv(
+        aggregated_data,
+        "Download plotted data as csv",
+        "time_series.csv",
+    )
 
 def plot_network_design():
     data = st.session_state['Result']['network_design']

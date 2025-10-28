@@ -52,11 +52,9 @@ def load_cash():
         st.session_state['NodeLocations'] = pd.read_csv("./data/Node_Locations.csv",
                                                         sep=";", index_col=0)
     if 'Summary2030' not in st.session_state:
-        st.session_state['Summary2030'] = pd.read_csv("./data/Summary_2030.csv",
-                                                      sep=";")
+        st.session_state['Summary2030'] = pd.read_excel("./data/Summary_2030.xlsx", header=[0, 1, 2], index_col=0)
     if 'Summary2040' not in st.session_state:
-        st.session_state['Summary2040'] = pd.read_csv("./data/Summary_2040.csv",
-                                                      sep=";")
+        st.session_state['Summary2040'] = pd.read_excel("./data/Summary_2040.xlsx", header=[0, 1, 2], index_col=0)
     if 'HeaderKeys' not in st.session_state:
         st.session_state['HeaderKeys'] = pd.read_csv("./data/HeaderKeys.csv",
                                                      sep=";")

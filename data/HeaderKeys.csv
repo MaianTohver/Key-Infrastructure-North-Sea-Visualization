@@ -1,78 +1,80 @@
-Available 2030;Available for net_emissions;Key;Header;Unit
-0;0;0;Case;
-0;0;0;Subcase;
-0;0;0;total_costs;
-0;0;0;carbon_costs;
-0;0;0;carbon_revenues;
-0;0;0;technology_cost;
-0;0;0;network_cost;
-0;0;0;import_cost;
-0;0;0;export_revenues;
-0;0;0;violation_cost;
-0;0;0;net_emissions;
-0;0;0;positive_emissions;
-0;0;0;negative_emissions;
-0;0;0;net_emissions_from_technologies;
-0;0;0;net_emissions_from_carriers;
-0;0;0;net_emissions_from_networks;
-0;0;0;time_total;
-0;0;0;lb;
-0;0;0;ub;
-0;0;0;absolute gap;
-0;0;0;objective;
-0;0;0;solver_status;
-0;0;0;pareto_point;
-0;0;0;monte_carlo_run;
-0;0;0;time_stage;
-0;0;0;normalized_costs;
-0;0;0;normalized_emissions;
-0;0;0;delta_cost;
-0;0;0;delta_emissions;
-0;0;0;abatemente_cost;
-1;0;Curtailment - total;curtailment_total;TWh
-1;1;Electricity generation - existing vRES;generic_production_total;TWh
-1;1;Electricity imports;import_el;TWh
-1;1;Blue hydrogen replacement;export_h2;TWh
-1;1;Electricity generation - coal;PowerPlant_Coal_existing;TWh
-1;1;Electricity generation - gas;PowerPlant_Gas_existing;TWh
-1;1;Electricity generation - nuclear;PowerPlant_Nuclear_existing;TWh
-1;1;Electricity generation - oil;PowerPlant_Oil_existing;TWh
-1;1;Electricity generation - pumped hydro (closed);Storage_PumpedHydro_Closed_existing;TWh
-1;1;Electricity generation - pumped hydro (open);Storage_PumpedHydro_Open_existing;TWh
-1;1;Electricity generation - pumped hydro (reservoir);Storage_PumpedHydro_Reservoir_existing;TWh
-0;0;Electricity generation - new offshore wind;Offshore_Wind;TWh
-0;0;Electricity generation - new onshore wind;Onshore_Wind;TWh
-0;0;Electricity generation - new PV;PV;TWh
-0;0;0;Storage_Battery_Offshore;
-0;0;0;Storage_Battery_new;
-1;1;Hydrogen production - onshore electrolysis;Electrolyser_PEM;TWh
-1;1;Hydrogen production - offshore electrolysis;Electrolyser_PEM_offshore;TWh
-1;1;Electricity generation - fuel cell;FuelCell;TWh
-0;0;;Storage_Hydrogen;
-1;0;Capacity - new electricity grid (AC);electricityAC;GWkm
-0;0;Capacity - new electricity grid (DC);electricityDC;GWkm
-1;0;Capacity - new hydrogen pipelines (offshore);hydrogenPipelineOffshore;GWkm
-1;0;Capacity - new hydrogen pipelines (onshore, new);hydrogenPipelineOnshore_new;GWkm
-1;0;Capacity - new hydrogen pipelines (onshore, repurposed);hydrogenPipelineOnshore_re;GWkm
-0;0;0;PowerPlant_Oil_existing_size;
-0;0;0;Storage_PumpedHydro_Open_existing_size;
-0;0;0;Storage_PumpedHydro_Closed_existing_size;
-0;0;0;Storage_PumpedHydro_Reservoir_existing_size;
-0;0;0;PowerPlant_Nuclear_existing_size;
-0;0;0;PowerPlant_Gas_existing_size;
-0;0;0;PowerPlant_Coal_existing_size;
-1;0;Capacity - electricity storage (offshore);Storage_Battery_Offshore_size;GWh
-1;0;Capacity - electricity storage (onshore);Storage_Battery_new_size;GWh
-1;0;Capacity - electrolyser (onshore);Electrolyser_PEM_size;GW
-1;0;Capacity - hydrogen storage;Storage_Hydrogen_size;GWh
-1;0;Capacity - electrolyser (offshore);Electrolyser_PEM_offshore_size;GW
-0;0;Capacity - new PV;PV_size;GW
-0;0;Capacity - new onshore wind;Onshore_Wind_size;GW
-0;0;Capacity - new offshore wind;Offshore_Wind_size;GW
-1;0;Capacity - fuel cell;FuelCell_size;GW
-1;1;Emissions - blue hydrogen production;h2_emissions;t
-1;1;Emissions - total;total_emissions;t
-1;1;Emissions - electricity generation;electricity_emissions;t
-0;0;Costs - blue hydrogen production;hydrogen_costs_smr;EUR
-0;0;Costs - total;total_costs_with_smr;EUR
-0;0;Costs - electricity generation and imports;electricity_costs;EUR
+Available 2030;Available for net_emissions;Key;level0;level1;level2;Unit;Factor
+0;0;Case;global;global;Case;;
+0;0;Subcase;global;global;Subcase;;
+0;0;climate_year;global;global;cy;;
+0;0;0;;;total_costs;;
+0;0;0;;;carbon_costs;;
+0;0;0;;;carbon_revenues;;
+0;0;0;;;technology_cost;;
+0;0;0;;;network_cost;;
+0;0;0;;;import_cost;;
+0;0;0;;;export_revenues;;
+0;0;0;;;violation_cost;;
+0;0;0;;;net_emissions;;
+0;0;0;;;positive_emissions;;
+0;0;0;;;negative_emissions;;
+0;0;0;;;net_emissions_from_technologies;;
+0;0;0;;;net_emissions_from_carriers;;
+0;0;0;;;net_emissions_from_networks;;
+0;0;0;;;time_total;;
+0;0;0;;;lb;;
+0;0;0;;;ub;;
+0;0;0;;;absolute gap;;
+0;0;0;;;objective;;
+0;0;0;;;solver_status;;
+0;0;0;;;pareto_point;;
+0;0;0;;;monte_carlo_run;;
+0;0;0;;;time_stage;;
+0;0;0;;;normalized_costs;;
+0;0;0;;;normalized_emissions;;
+0;0;0;;;delta_cost;;
+0;0;0;;;delta_emissions;;
+0;0;0;;;abatemente_cost;;
+1;0;Energybalance - curtailed electricity;global;electricity;curtailment;TWh;1.00E-06
+0;0;Energybalance - electricity demand;global;electricity;demand;TWh;1.00E-06
+1;1;Energybalance - electricity import;global;electricity;import;TWh;1.00E-06
+1;1;Energybalance - hydrogen produced;global;hydrogen;export;TWh;1.00E-06
+1;1;0;;;PowerPlant_Coal_existing;;
+1;1;0;;;PowerPlant_Gas_existing;;
+1;1;0;;;PowerPlant_Nuclear_existing;;
+1;1;0;;;PowerPlant_Oil_existing;;
+1;1;0;;;Storage_PumpedHydro_Closed_existing;;
+1;1;0;;;Storage_PumpedHydro_Open_existing;;
+1;1;0;;;Storage_PumpedHydro_Reservoir_existing;;
+0;0;0;;;Offshore_Wind;;
+0;0;0;;;Onshore_Wind;;
+0;0;0;;;PV;;
+0;0;0;;;Storage_Battery_Offshore;;
+0;0;0;;;Storage_Battery_new;;
+1;1;0;;;Electrolyser_PEM;;
+1;1;0;;;Electrolyser_PEM_offshore;;
+1;1;0;;;FuelCell;;
+0;0;;;;Storage_Hydrogen;;
+1;0;Capacity - new electricity grid (AC);netw_size;electricityAC;size;GWkm;1.00E-03
+1;0;Capacity - new electricity grid (DC);netw_size;electricityDC;size;GWkm;1.00E-03
+1;0;Capacity - new hydrogen pipelines (offshore);netw_size;hydrogenPipelineOffshore;size;GWkm;1.00E-03
+1;0;Capacity - new hydrogen pipelines (onshore, new);netw_size;hydrogenPipelineOnshore_new;size;GWkm;1.00E-03
+1;0;Capacity - new hydrogen pipelines (onshore, repurposed);netw_size;hydrogenPipelineOnshore_re;size;GWkm;1.00E-03
+0;0;0;;;PowerPlant_Oil_existing_size;;
+0;0;0;;;Storage_PumpedHydro_Open_existing_size;;
+0;0;0;;;Storage_PumpedHydro_Closed_existing_size;;
+0;0;0;;;Storage_PumpedHydro_Reservoir_existing_size;;
+0;0;0;;;PowerPlant_Nuclear_existing_size;;
+0;0;0;;;PowerPlant_Gas_existing_size;;
+0;0;0;;;PowerPlant_Coal_existing_size;;
+1;0;Capacity - electricity storage (offshore);tec_sizes;Storage_Battery_Offshore;size;GWh;1.00E-03
+1;0;Capacity - electricity storage (onshore);tec_sizes;Storage_Battery_new;size;GWh;1.00E-03
+1;0;Capacity - electrolyser (onshore);tec_sizes;Electrolyser_PEM;size;GW;1.00E-03
+1;0;Capacity - hydrogen storage;tec_sizes;Storage_Hydrogen;size;GWh;1.00E-03
+1;0;Capacity - electrolyser (offshore);tec_sizes;Electrolyser_PEM_offshore;size;GW;1.00E-03
+0;0;Capacity - new PV;tec_sizes;PV;size;GW;1.00E-03
+0;0;Capacity - new onshore wind;tec_sizes;Onshore_Wind;size;GW;1.00E-03
+0;0;Capacity - new offshore wind;tec_sizes;Offshore_Wind;size;GW;1.00E-03
+1;0;Capacity - fuel cell;tec_sizes;FuelCell;size;GW;1.00E-03
+1;1;Emissions - blue hydrogen production;global;final;emissions_smr;Gt;1.00E-06
+1;1;Emissions - total;global;final;emissions_total;Gt;1.00E-06
+1;1;Emissions - electricity generation;global;final;emissions_other;Gt;1.00E-06
+1;0;Costs - blue hydrogen production;global;final;hydrogen_costs_smr;EUR;1
+1;0;Costs - existing system;global;final;cost_existing_system;EUR;1
+1;0;Costs - new system and imports;global;final;cost_new_system;EUR;1
+1;0;Costs - total;global;final;total_costs_with_smr;EUR;1

@@ -118,7 +118,7 @@ def read_energy_balance(path_h5):
     with h5py.File(path_h5, 'r') as hdf_file:
         df_bal = extract_datasets_from_h5_group(hdf_file["operation/energy_balance"])
 
-
+    df_bal = df_bal['period1']
     df_bal = df_bal.rename_axis(columns=['Node', 'Carrier', 'Variable'])
     df_bal = add_time_steps_to_df(df_bal)
 
@@ -131,6 +131,7 @@ def read_technology_operation(path_h5):
     with h5py.File(path_h5, 'r') as hdf_file:
         df_ope = extract_datasets_from_h5_group(hdf_file["operation/technology_operation"])
 
+    df_ope = df_ope['period1']
     df_ope = df_ope.rename_axis(columns=['Node', 'Technology', 'Variable'])
     df_ope = add_time_steps_to_df(df_ope)
 
@@ -142,6 +143,7 @@ def read_technology_design(path_h5):
     """
     with h5py.File(path_h5, 'r') as hdf_file:
         technology_design = extract_datasets_from_h5_group(hdf_file["design/nodes"])
+        technology_design = technology_design['period1']
         technology_design = pd.melt(technology_design)
         technology_design.columns = ['Node', 'Technology', 'Variable', 'Value']
 
@@ -150,7 +152,7 @@ def read_technology_design(path_h5):
 def read_networks(path_h5):
     with h5py.File(path_h5, 'r') as hdf_file:
         network_design = extract_datasets_from_h5_group(hdf_file["design/networks"])
-
+    network_design = network_design['period1']
     network_design = network_design.melt()
     network_design.columns = ['Network', 'Arc_ID', 'Variable', 'Value']
     network_design = network_design.pivot(columns='Variable', index=['Arc_ID', 'Network'], values='Value')
@@ -163,6 +165,7 @@ def read_networks(path_h5):
     with h5py.File(path_h5, 'r') as hdf_file:
         network_operation = extract_datasets_from_h5_group(hdf_file["operation/networks"])
 
+    network_operation = network_operation['period1']
     network_operation.columns.names = ['Network', 'Arc_ID', 'Variable']
 
     network_operation = network_operation.T.reset_index()
