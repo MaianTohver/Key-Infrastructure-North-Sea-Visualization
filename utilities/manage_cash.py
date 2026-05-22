@@ -50,7 +50,7 @@ def load_cash():
         st.session_state['Result'] = {}
     if 'NodeLocations' not in st.session_state:
         st.session_state['NodeLocations'] = pd.read_csv("./data/Node_Locations.csv",
-                                                        sep=";", index_col=0)
+                                                        sep=";", index_col=0, quoting=3)
     if 'Summary2030' not in st.session_state:
         st.session_state['Summary2030'] = pd.read_csv("./data/Summary_2030.csv", header=[0, 1, 2], index_col=0)
     if 'Summary2040' not in st.session_state:
