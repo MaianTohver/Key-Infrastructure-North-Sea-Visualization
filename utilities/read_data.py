@@ -156,10 +156,14 @@ def read_networks(path_h5):
     network_design = network_design.melt()
     network_design.columns = ['Network', 'Arc_ID', 'Variable', 'Value']
     network_design = network_design.pivot(columns='Variable', index=['Arc_ID', 'Network'], values='Value')
-    network_design['FromNode'] = network_design['fromNode'].str.decode('utf-8')
-    network_design['ToNode'] = network_design['toNode'].str.decode('utf-8')
+    network_design['FromNode'] = network_design['fromNode'].apply(
+        lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
+    network_design['ToNode'] = network_design['toNode'].apply(
+        lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
     network_design.drop(columns=['fromNode', 'toNode', 'network'], inplace=True)
     network_design = network_design.reset_index()
+    numeric_cols = [c for c in network_design.columns if c not in ['Arc_ID', 'Network', 'FromNode', 'ToNode']]
+    network_design[numeric_cols] = network_design[numeric_cols].apply(pd.to_numeric, errors='coerce')
     arc_ids = network_design[['Arc_ID', 'FromNode', 'ToNode']]
 
     with h5py.File(path_h5, 'r') as hdf_file:
