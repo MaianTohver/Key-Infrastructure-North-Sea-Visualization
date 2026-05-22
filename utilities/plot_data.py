@@ -229,52 +229,50 @@ def plot_network_design():
 
         if submitted:
             data = data[data['Network'].isin(selected_netw)]
-            # st.table(data)
 
-            arc_ids = data[['Arc_ID', 'FromNode', 'ToNode']]
-            data = data.groupby('Arc_ID').sum()
-            data.drop(columns=['FromNode', 'ToNode', 'Network'], inplace=True)
-            data = data.merge(arc_ids, on='Arc_ID')
+            if data.empty:
+                st.warning("No data for the selected network(s). Please select at least one network.")
+            else:
+                arc_ids = data[['Arc_ID', 'FromNode', 'ToNode']]
+                data = data.groupby('Arc_ID').sum(numeric_only=True).reset_index()
+                data = data.merge(arc_ids.drop_duplicates('Arc_ID'), on='Arc_ID')
 
-            # Init map
-            node_data = st.session_state['NodeLocations']
-            map_center = [node_data['lat'].mean(), node_data['lon'].mean()]
-            map = folium.Map(location=map_center, zoom_start=5)
+                # Init map
+                node_data = st.session_state['NodeLocations']
+                map_center = [node_data['lat'].mean(), node_data['lon'].mean()]
+                map = folium.Map(location=map_center, zoom_start=5)
 
-            # Plot nodes
-            plot_nodes(map, node_data)
+                # Plot nodes
+                plot_nodes(map, node_data)
 
-            # Plot edges
-            if selected_variable in ['size', 'capex', 'total_flow']:
-                # Determine color scale:
-                max_value = max(data[selected_variable])
-                if max_value >0:
-                    color_scale = linear.OrRd_09.scale(0, 1)
+                # Plot edges
+                if selected_variable in ['size', 'capex', 'total_flow']:
+                    max_value = data[selected_variable].max()
+                    if max_value > 0:
+                        color_scale = linear.OrRd_09.scale(0, 1)
 
-                    for _, edge_data in data.iterrows():
-                        from_node_data = node_data.loc[edge_data.FromNode]
-                        to_node_data = node_data.loc[edge_data.ToNode]
+                        for _, edge_data in data.iterrows():
+                            from_node_data = node_data.loc[edge_data.FromNode]
+                            to_node_data = node_data.loc[edge_data.ToNode]
 
-                        # Normalize edge value to be within [0, 1]
-                        normalized_value = (edge_data[selected_variable]) / max_value
+                            normalized_value = edge_data[selected_variable] / max_value
+                            color = color_scale(normalized_value)
+                            if normalized_value > 0.001:
+                                line = folium.plugins.PolyLineOffset(
+                                    [(from_node_data['lat'], from_node_data['lon']),
+                                     (to_node_data['lat'], to_node_data['lon'])],
+                                    color=color,
+                                    weight=3.5,
+                                    opacity=1,
+                                    offset=3,
+                                    tooltip=edge_data[selected_variable]
+                                ).add_to(map)
+                                attr = {"font-weight": "bold", "font-size": "13"}
+                                folium.plugins.PolyLineTextPath(
+                                    line, "      >", repeat=True, offset=5, attributes=attr
+                                ).add_to(map)
 
-                        # Determine color based on the color scale
-                        color = color_scale(normalized_value)
-                        if normalized_value > 0.001:
-                            line = folium.plugins.PolyLineOffset([(from_node_data['lat'], from_node_data['lon']),
-                                                                  (to_node_data['lat'], to_node_data['lon'])],
-                                                                 color=color,
-                                                                 weight=3.5,  # Set a default weight
-                                                                 opacity=1,
-                                                                 offset=3,
-                                                                 tooltip=edge_data[selected_variable]).add_to(map)
-                            attr = {"font-weight": "bold", "font-size": "13"}
-
-                            folium.plugins.PolyLineTextPath(
-                                line, "      >", repeat=True, offset=5, attributes=attr
-                            ).add_to(map)
-
-            st_folium(map, width=725)
+                st_folium(map, width=725)
 
 
 def plot_network_operation():
@@ -302,47 +300,47 @@ def plot_network_operation():
     data = data.reset_index()
     submitted = st.button('Plot')
 
-
     if submitted:
-        arc_ids = data[['Arc_ID', 'FromNode', 'ToNode']]
-        data = data.groupby('Arc_ID').sum()
-        data.drop(columns=['FromNode', 'ToNode', 'Network'], inplace=True)
-        data = data.merge(arc_ids, on='Arc_ID')
+        if not selected_network:
+            st.warning("Please select at least one network.")
+        elif data.empty:
+            st.warning("No data for the selected network(s).")
+        else:
+            arc_ids = data[['Arc_ID', 'FromNode', 'ToNode']]
+            data = data.groupby('Arc_ID').sum()
+            data.drop(columns=['FromNode', 'ToNode', 'Network'], inplace=True)
+            data = data.merge(arc_ids, on='Arc_ID')
 
-        # Init map
-        node_data = st.session_state['NodeLocations']
-        map_center = [node_data['lat'].mean(), node_data['lon'].mean()]
-        map = folium.Map(location=map_center, zoom_start=5)
+            # Init map
+            node_data = st.session_state['NodeLocations']
+            map_center = [node_data['lat'].mean(), node_data['lon'].mean()]
+            map = folium.Map(location=map_center, zoom_start=5)
 
-        # Plot nodes
-        plot_nodes(map, node_data)
+            # Plot nodes
+            plot_nodes(map, node_data)
 
-        # Plot edges
-        max_value = max(data['Flow'])
-        color_scale = linear.OrRd_09.scale(0, 1)
+            # Plot edges
+            max_value = data['Flow'].max()
+            color_scale = linear.OrRd_09.scale(0, 1)
 
-        for _, edge_data in data.iterrows():
-            from_node_data = node_data.loc[edge_data.FromNode]
-            to_node_data = node_data.loc[edge_data.ToNode]
+            for _, edge_data in data.iterrows():
+                from_node_data = node_data.loc[edge_data.FromNode]
+                to_node_data = node_data.loc[edge_data.ToNode]
 
-            # Normalize edge value to be within [0, 1]
-            flow_this_direction = edge_data['Flow']
+                flow_this_direction = edge_data['Flow']
+                flow_other_direction = data[
+                    (data['FromNode'] == to_node_data.name) &
+                    (data['ToNode'] == from_node_data.name)]
 
-            flow_other_direction = data[
-                (data['FromNode'] == to_node_data.name) &
-                (data['ToNode'] == from_node_data.name)]
+                uni_flow = flow_this_direction - flow_other_direction.loc[:, 'Flow'].values[0]
 
-            uni_flow = flow_this_direction - flow_other_direction.loc[:, 'Flow'].values[0]
+                if uni_flow > 0.1:
+                    normalized_value = uni_flow / max_value
+                    color = color_scale(normalized_value)
+                    folium.plugins.AntPath(
+                        locations=[(from_node_data['lat'], from_node_data['lon']),
+                                   (to_node_data['lat'], to_node_data['lon'])],
+                        color=color, dash_array=[10, 20], weight=5,
+                    ).add_to(map)
 
-            if uni_flow > 0.1:
-                normalized_value = uni_flow / max_value
-
-                # # Determine color based on the color scale
-                color = color_scale(normalized_value)
-                folium.plugins.AntPath(
-                    locations=[(from_node_data['lat'], from_node_data['lon']),
-                               (to_node_data['lat'], to_node_data['lon'])],
-                    color=color, dash_array=[10, 20], weight=5,
-                ).add_to(map)
-
-        st_folium(map, width=725)
+            st_folium(map, width=725)
