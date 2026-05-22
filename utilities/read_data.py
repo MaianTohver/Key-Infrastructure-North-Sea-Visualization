@@ -156,10 +156,9 @@ def read_networks(path_h5):
     network_design = network_design.melt()
     network_design.columns = ['Network', 'Arc_ID', 'Variable', 'Value']
     network_design = network_design.pivot(columns='Variable', index=['Arc_ID', 'Network'], values='Value')
-    network_design['FromNode'] = network_design['fromNode'].apply(
-        lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
-    network_design['ToNode'] = network_design['toNode'].apply(
-        lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
+    network_design.columns.name = None  # flatten the column axis name
+    network_design['FromNode'] = network_design['fromNode'].apply(lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
+    network_design['ToNode'] = network_design['toNode'].apply(lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
     network_design.drop(columns=['fromNode', 'toNode', 'network'], inplace=True)
     network_design = network_design.reset_index()
     numeric_cols = [c for c in network_design.columns if c not in ['Arc_ID', 'Network', 'FromNode', 'ToNode']]
@@ -171,11 +170,9 @@ def read_networks(path_h5):
 
     network_operation = network_operation['period1']
     network_operation.columns.names = ['Network', 'Arc_ID', 'Variable']
-
     network_operation = network_operation.T.reset_index()
     network_operation = pd.merge(network_operation, arc_ids.drop_duplicates(subset=['Arc_ID']), how='inner', left_on='Arc_ID', right_on='Arc_ID')
     network_operation = network_operation.set_index(['Network', 'Arc_ID', 'Variable', 'FromNode', 'ToNode']).T
-
     network_operation = add_time_steps_to_df(network_operation)
 
     return network_design, network_operation
