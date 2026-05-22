@@ -9,6 +9,7 @@ from utilities import load_cash
 import altair as alt
 
 # Session States
+st.set_page_config(page_title="Compare Scenarios")
 load_cash()
 
 # Page Setup

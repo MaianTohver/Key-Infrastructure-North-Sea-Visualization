@@ -1,8 +1,9 @@
-import streamlit
+import streamlit as st
 
 from utilities import *
 from utilities.process_data import export_csv
 
+st.set_page_config(page_title="Download Data")
 load_cash()
 
 # Page Setup
