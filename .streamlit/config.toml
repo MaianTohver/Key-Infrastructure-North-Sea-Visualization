@@ -1,2 +1,4 @@
 [server]
 maxUploadSize = 400
+port = 8502
+browserSignalingPort = 8503
