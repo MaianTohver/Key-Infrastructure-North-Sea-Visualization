@@ -173,7 +173,7 @@ if unstack_cols:
                    alt.Tooltip('Unit:N', title="Unit")]
     ).properties(
     ))
-    st.altair_chart(base_year.mark_bar(), theme="streamlit", use_container_width=True)
+    st.altair_chart(base_year.mark_bar(), theme="streamlit", width='stretch')
 
 else:
     plot_data_other_cy_summed = plot_data_other_cy.groupby(["climate_year", "Case_Subcase"]).sum().reset_index()
@@ -203,7 +203,7 @@ else:
                         color=alt.value('black')
     ).interactive()
 
-    st.altair_chart(base_year.mark_bar() + other_years.mark_point(), theme="streamlit", use_container_width=True)
+    st.altair_chart(base_year.mark_bar() + other_years.mark_point(), theme="streamlit", width='stretch')
 
 
 

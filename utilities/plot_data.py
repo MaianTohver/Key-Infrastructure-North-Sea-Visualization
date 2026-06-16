@@ -75,7 +75,7 @@ def plot_technology_design():
             x=alt.X('Value:Q', title=selected_var),
             color='Technology:N'
         ).interactive()
-        st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, width='stretch')
 
 
 def plot_energy_balance():
@@ -117,7 +117,7 @@ def plot_energy_balance():
                 aggregated_data.columns.get_level_values('Variable').isin(selected_supply_series)]
     plot_data.columns = plot_data.columns.get_level_values('Variable')
     chart = plot_chart(plot_data)
-    st.altair_chart(chart, theme="streamlit", use_container_width=True)
+    st.altair_chart(chart, theme="streamlit", width='stretch')
 
     st.header("Demand")
     # Multi-select box for filtering series
@@ -131,7 +131,7 @@ def plot_energy_balance():
                 aggregated_data.columns.get_level_values('Variable').isin(selected_demand_series)]
     plot_data.columns = plot_data.columns.get_level_values('Variable')
     chart = plot_chart(plot_data)
-    st.altair_chart(chart, theme="streamlit", use_container_width=True)
+    st.altair_chart(chart, theme="streamlit", width='stretch')
 
 
 def plot_technology_operation():
@@ -179,7 +179,7 @@ def plot_technology_operation():
             plot_data.columns = plot_data.columns.get_level_values('Variable')
             if not plot_data.empty:
                 chart = plot_chart(plot_data)
-                st.altair_chart(chart, theme="streamlit", use_container_width=True)
+                st.altair_chart(chart, theme="streamlit", width='stretch')
             else:
                 st.markdown("Nothing to show")
 
@@ -190,7 +190,7 @@ def plot_technology_operation():
             plot_data.columns = plot_data.columns.get_level_values('Variable')
             if not plot_data.empty:
                 chart = plot_chart(plot_data)
-                st.altair_chart(chart, theme="streamlit", use_container_width=True)
+                st.altair_chart(chart, theme="streamlit", width='stretch')
             else:
                 st.markdown("Nothing to show")
 
@@ -201,7 +201,7 @@ def plot_technology_operation():
             plot_data.columns = plot_data.columns.get_level_values('Variable')
             if not plot_data.empty:
                 chart = plot_chart(plot_data)
-                st.altair_chart(chart, theme="streamlit", use_container_width=True)
+                st.altair_chart(chart, theme="streamlit", width='stretch')
             else:
                 st.markdown("Nothing to show")
 
