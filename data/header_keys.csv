@@ -1,0 +1,11 @@
+Key,level0,level1,level2,Unit,Factor,Available 2030,Available for net_emissions
+Case,global,global,Case,text,1.0,1,1
+Subcase,global,global,Subcase,text,1.0,1,1
+climate_year,global,global,climate_year,year,1.0,1,1
+Onshore Wind,design,nodes,Onshore_Wind,GW,0.001,1,1
+Offshore Wind,design,nodes,Offshore_Wind,GW,0.001,1,1
+Solar PV,design,nodes,PV,GW,0.001,1,1
+Total System Cost,summary,global,total_cost,MEUR,1e-06,1,0
+Network Costs,summary,global,cost_netws,MEUR,1e-06,1,0
+Technology CAPEX,summary,global,cost_capex_tecs,MEUR,1e-06,1,0
+Electricity Imports,summary,global,cost_imports,MEUR,1e-06,1,0
